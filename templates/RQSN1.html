@@ -1,0 +1,110 @@
+{% extends "index.html" %}
+{% block title %} - {{ title }} program{% endblock %}
+{% block content %}
+    <div class="container">
+        <h3 class="mt-3 mb-3">{{ title }}</h3>
+        <div class="card">
+            <div class="card-body pt-4 px-5 pb-0 mb-0">
+                <form id="form" action="/RQSN1" method="POST">
+
+                    {% macro form_input(name, val, cond) -%}
+                        <div class="form-group row mx-0">
+                            <label for="{{ name }}" class="col-2 col-form-label font-weight-bold text-right">{{ name }}</label>
+                            <input type="text" class="col-2 form-control" id="{{ name }}" name="{{ name }}" placeholder="..." value="{{ val }}" required {{ cond }}>
+                            <small class="col form-text text-muted pl-2"> - {{ caller() }}</small>
+                        </div>
+                    {%- endmacro %}
+
+                    <div class="row">
+                        <div class="col-4 pl-5">
+                            <table class="table table-sm text-center">
+                                <thead>
+                                    <tr>
+                                        <th class="border-top-0"></th>
+                                        <th class="border-top-0">RD</th>
+                                        <th class="border-top-0">XD</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in range(11) %}
+                                        <tr>
+                                            <th style="vertical-align: middle;">{{ i + 1 }}</th>
+                                            <td><input type="text" class="form-control-plaintext text-center py-1" id="RD{{ i }}" name="RD{{ i }}" placeholder="..." required></td>
+                                            <td><input type="text" class="form-control-plaintext text-center py-1" id="XD{{ i }}" name="XD{{ i }}" placeholder="..." required></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-8 pt-2">
+                            {% call form_input('K') %} признак контрольного сечения {% endcall %}
+                            {% call form_input('GC') %} показатель адиабаты в сопле {% endcall %}
+                            {% call form_input('DXF') %} толщина вытеснения пограничного слоя на входе в сопло {% endcall %}
+                            {% call form_input('P0C') %} относительное полное давление в сопле {% endcall %}
+                            {% call form_input('PD') %} относительное давление в обласи среза сопла {% endcall %}
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Start Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Результаты расчета</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body pr-5">
+                                {% call form_input('CQ', A['CQ'], 'readonly') %} коэффициент расхода сопла {% endcall %}
+                                {% call form_input('CQ1', A['CQ1'], 'readonly') %} коэффициент расхода и тяги сопла при <span style="text-decoration: overline;">p</span><sub>Д</sub> ≠ 1 и π<sub>ср</sub> = const {% endcall %}
+                                {% call form_input('CP2', A['CP2'], 'readonly') %} коэффициент давления и тяги сопла при <span style="text-decoration: overline;">p</span><sub>Д</sub> ≠ 1 и G<sub>с</sub> = const {% endcall %}
+                                {% call form_input('CJ', A['CJ'], 'readonly') %} коэффициент импульса сопла {% endcall %}
+                                {% call form_input('CR', A['CR'], 'readonly') %} коэффициент тяги сопла {% endcall %}
+                                {% call form_input('CR1', A['CR1'], 'readonly') %} коэффициент расхода и тяги сопла при <span style="text-decoration: overline;">p</span><sub>Д</sub> ≠ 1 и π<sub>ср</sub> = const {% endcall %}
+                                {% call form_input('CR2', A['CR2'], 'readonly') %} коэффициент давления и тяги сопла при <span style="text-decoration: overline;">p</span><sub>Д</sub> ≠ 1 и G<sub>с</sub> = const {% endcall %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal -->
+
+            </div>
+            <div class="card-footer text-right">
+                <button type="button" class="btn btn-info d-inline" onclick="example()">Контрольный пример</button>
+                <button type="submit" class="btn btn-secondary d-inline" form="form">Расчет</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script>
+        function example() {
+            var dict = {
+                K: 1,
+                GC: 1.4,
+                DXF: 0.0288,
+                P0C: 2,
+                PD: 0.95,
+                RD: [2.305, 2.238, 1.926, 1.610, 1.453, 1.376, 1.297, 1.225, 1.151, 1.074, 1.000],
+                XD: [0, 0.640, 1.260, 1.880, 2.190, 2.340, 2.490, 2.640, 2.790, 2.940, 3.090],
+            }
+            for (key in dict) {
+                if ($("input[name=" + key + "]").val() == '') {
+                    $("input[name=" + key + "]").val(dict[key])
+                }
+            }
+            for (i=0; i<11; i++) {
+                $("input[name=" + 'RD' + i + "]").val(dict.RD[i])
+                $("input[name=" + 'XD' + i + "]").val(dict.XD[i])
+            }
+            // alert($("#results").text())
+        }
+        if ('{{A}}'.length > 2) {
+            // alert('{{A}}')
+            $('#myModal').modal('show')
+        }
+    </script>
+{% endblock %}
