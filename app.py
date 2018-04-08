@@ -1,9 +1,13 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import os
 import datetime
 import pandas as pd
 from flask import Flask, request, render_template
 import CQNZ1
 import RQSN1
+import RQCN1
 # from pyfladesk import init_gui
 # import webbrowser
 
@@ -33,7 +37,7 @@ def home(page='index'):
                 arr_XD.append(ANS[key])
             else:
                 savefile.write(key + ' = ' + str(ANS[key]) + '\n')
-        savefile.write('\n' + str(pd.DataFrame({'RD': arr_RD, 'XD': arr_XD})) + '\n')
+        if len(arr_RD) != 0: savefile.write('\n' + str(pd.DataFrame({'RD': arr_RD, 'XD': arr_XD})) + '\n')
         savefile.write('----------------------------------------------------\n')
         savefile.close()
     return render_template(page + '.html', title=page, A=func)

@@ -1,17 +1,33 @@
 from math import *
-import pandas as pd
+import PROGRAMS as prgs
+import FLFK
+# import pandas as pd
 
-FK = 3.14
-FCK = 2
-GC = 1.4
-DK = 0.1
-RE = 1000000
-TW = 1
-DY0 = 0.004
-RD = [2.305, 2.238, 1.926, 1.610, 1.453, 1.376, 1.297, 1.225, 1.151, 1.074, 1.000]
-XD = [0, 0.640, 1.260, 1.880, 2.190, 2.340, 2.490, 2.640, 2.790, 2.940, 3.090]
+# FK = 3.14
+# FCK = 2
+# GC = 1.4
+# DK = 0.1
+# RE = 1000000
+# TW = 1
+# DY0 = 0.004
+# RD = [2.305, 2.238, 1.926, 1.610, 1.453, 1.376, 1.297, 1.225, 1.151, 1.074, 1.000]
+# XD = [0, 0.640, 1.260, 1.880, 2.190, 2.340, 2.490, 2.640, 2.790, 2.940, 3.090]
 
 def RXLN1():
+
+    FK = float(ANS['FK'])
+    FCK = float(ANS['FCK'])
+    G = float(ANS['GC'])
+    DK = float(ANS['DK'])
+    RE = float(ANS['RE'])
+    TW = float(ANS['TW'])
+    DY0 = float(ANS['DY0'])
+    RD = [0]*11
+    XD = [0]*11
+    for i in range(11):
+        RD[i] = (float(ANS['RD' + str(i)]))
+        XD[i] = (float(ANS['XD' + str(i)]))
+
     A = [0]*15
     A1 = [0]*15
     D1 = [0]*15
@@ -20,8 +36,8 @@ def RXLN1():
     D = [0]*15
     B = [0]*15
 
-    YI = YID(1, G, 1.0, FCK)
-    VC = VQ(1, G, FCK)
+    YI = prgs.YID(1, G, 1.0, FCK)
+    VC = prgs.VQ(1, G, FCK)
     RK = 0.5642*sqrt(FK)
     RC = 0.5642*sqrt(FCK*FK)
     XD[0] = 0
@@ -34,13 +50,13 @@ def RXLN1():
         A[i] = 0.04*((i+1) - 1)                                   #CHANGED
         ZS = 2/(1 + cos(A(i)))
         TC = tan(A(i))
-        VS = VQ(1, G, FCK*ZS)
-        AA = asin(1/WV(G, VS)) + A[i]
-        D1[i] = 1 - ZV(VS)/(ZS*ZV(VC))
+        VS = prgs.VQ(1, G, FCK*ZS)
+        AA = asin(1/prgs.WV(G, VS)) + A[i]
+        D1[i] = 1 - prgs.ZV(VS)/(ZS*prgs.ZV(VC))
         X2 = 0
         if i == 1:
             X2 = RC/tan(AA)
-            W0 = WV(G, VC)
+            W0 = prgs.WV(G, VC)
         else:
             R0 = RC/sin(A[i])
             X0 = RC/tan(A[i])
@@ -48,13 +64,13 @@ def RXLN1():
                 R2 = RC*(1 - 0.05*(j+1))                          #CHANGED
                 X1 = X2 + 0.05*RC/tan(AA)
                 FSK = FCK*ZS*(R2**2 + (X0 - X1)**2)/R0**2
-                VS = VQ(1, G, FSK)
-                AA1 = asin(1/WV(G, VS)) + atan(R2/(X0 - X1))
+                VS = prgs.Q(1, G, FSK)
+                AA1 = asin(1/prgs.WV(G, VS)) + atan(R2/(X0 - X1))
                 X2 = X2 + 0.025*(0.5/tan(AA) + 1.5/tan(AA1))*RC
                 FSK = FCK*ZS*(R2**2 + (X0 - X2)**2)/R0**2
-                VS = VQ(1, G, FSK)
-                AA = asin(1/WV(G, VS)) + atan(R2/(X0 - X2))
-            W0 = WV(G, VS)
+                VS = prgs.VQ(1, G, FSK)
+                AA = asin(1/prgs.WV(G, VS)) + atan(R2/(X0 - X2))
+            W0 = prgs.WV(G, VS)
         get_ipython().magic('pinfo2 ')
         B[i] = RK*XK + X2
         BC = B[i]
@@ -67,9 +83,9 @@ def RXLN1():
             XD[j] = 0.05*((j+1) - 1)*BC                           #CHANGED
             RD[j] = RK + C1*XD[j] + C2*XD[j]**1.5 + C3*XD[j]**2
             F = (RD[j]/RK)**2
-            W2 = WV(G, VQ(1, G, F))
-            DS = 0.0786*BC*(RD(j-1) + RD[j])/FK
-            S = S + DS*G*W2**4*PV(G, VW(G, W2))*CF(TW, G, RE, W2, DXK)/W1**2
+            W2 = prgs.WV(G, prgs.VQ(1, G, F))
+            DS = 0.0786*BC*(prgs.RD(j-1) + RD[j])/FK
+            S = S + DS*G*W2**4*prgs.PV(G, prgs.VW(G, W2))*prgs.CF(TW, G, RE, W2, DXK)/W1**2
             W1 = W2
         D2[i] = S/YI
         D3[i] = D1[i] + D2[i]
@@ -103,30 +119,30 @@ DYA = RXLN1(FK, FCK, GC, DK, RE, TW, DY0, RC, XC)[2]
 DYF = RXLN1(FK, FCK, GC, DK, RE, TW, DY0, RC, XC)[3]
 CY = RXLN1(FK, FCK, GC, DK, RE, TW, DY0, RC, XC)[4]
 
-print("Подпрограмма RXLN1.")
-print("=======================")
-print("Иходные идентификаторы:", end = "\n\n")
-print("FK =", FK)
-print("FCK =", FCK)
-print("GC =", GC)
-print("DK =", DK)
-print("RE =", RE)
-print("TW =", TW)
-print("DY0 =", DY0, end="\n\n")
-frame = pd.DataFrame({'RD': [RD[i] for i in range(11)], 'XD': [XD[i] for i in range(11)]})
-print(frame, end = "\n\n")
-print("-----------------------")
-print("BC =", round(BC, 2), end=" ")
-print("+") if round(BC, 2) == 2.60 else print("(2.60) -")
-print("AC =", round(AC, 3), end=" ")
-print("+") if round(AC, 3) == 0.175 else print("(0.175) -")
-print("DYA =", round(DYA, 4), end=" ")
-print("+") if round(DYA, 4) == 0.0067 else print("(0.0067) -")
-print("DYF =", round(DYF, 4), end=" ")
-print("+") if round(DYF, 4) == 0.0051 else print("(0.0051) -")
-print("CY =", round(CY, 4), end=" ")
-print("+") if round(CY, 4) == 0.9842 else print("(0.9842) -")
-print("-----------------------")
+# print("Подпрограмма RXLN1.")
+# print("=======================")
+# print("Иходные идентификаторы:", end = "\n\n")
+# print("FK =", FK)
+# print("FCK =", FCK)
+# print("GC =", GC)
+# print("DK =", DK)
+# print("RE =", RE)
+# print("TW =", TW)
+# print("DY0 =", DY0, end="\n\n")
+# frame = pd.DataFrame({'RD': [RD[i] for i in range(11)], 'XD': [XD[i] for i in range(11)]})
+# print(frame, end = "\n\n")
+# print("-----------------------")
+# print("BC =", round(BC, 2), end=" ")
+# print("+") if round(BC, 2) == 2.60 else print("(2.60) -")
+# print("AC =", round(AC, 3), end=" ")
+# print("+") if round(AC, 3) == 0.175 else print("(0.175) -")
+# print("DYA =", round(DYA, 4), end=" ")
+# print("+") if round(DYA, 4) == 0.0067 else print("(0.0067) -")
+# print("DYF =", round(DYF, 4), end=" ")
+# print("+") if round(DYF, 4) == 0.0051 else print("(0.0051) -")
+# print("CY =", round(CY, 4), end=" ")
+# print("+") if round(CY, 4) == 0.9842 else print("(0.9842) -")
+# print("-----------------------")
 #BC = 2.60
 #AC = 0.175
 #DYA = 0.0067

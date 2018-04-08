@@ -1,0 +1,97 @@
+{% extends "index.html" %}
+{% block title %} - {{ title }} program{% endblock %}
+{% block content %}
+    <div class="container">
+        <h3 class="mt-3 mb-3">{{ title }}</h3>
+        <div class="card">
+            <div class="card-body pt-4 px-5 pb-0 mb-0">
+                <form id="form" action="/RQCN1" method="POST">
+
+                    {% macro form_input(name, val, cond) -%}
+                        <div class="form-group row mx-0">
+                            <label for="{{ name }}" class="col-2 col-form-label font-weight-bold text-right">{{ name }}</label>
+                            <input type="text" class="col-2 form-control" id="{{ name }}" name="{{ name }}" placeholder="..." value="{{ val }}" required {{ cond }}>
+                            <small class="col form-text text-muted pl-2"> - {{ caller() }}</small>
+                        </div>
+                    {%- endmacro %}
+
+                    <div class="row">
+                        <div class="col pt-2">
+                            {% call form_input('RF') %} признак контрольного сечения {% endcall %}
+                            {% call form_input('RK') %} толщина вытеснения пограничного слоя на входе в сопло {% endcall %}
+                            {% call form_input('RC') %} показатель адиабаты {% endcall %}
+                            {% call form_input('BD') %} площадь выходного сечения сопла {% endcall %}
+                            {% call form_input('BC') %} угол наклона образующей сверхзвуковой части сопла на срезе {% endcall %}
+                        </div>
+                        <div class="col pt-2">
+                            {% call form_input('G') %} относительное полное давление в сопле {% endcall %}
+                            {% call form_input('TW') %} относительное полное давление в сопле {% endcall %}
+                            {% call form_input('PD') %} относительное полное давление в сопле {% endcall %}
+                            {% call form_input('P0C') %} относительное полное давление в сопле {% endcall %}
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Start Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Результаты расчета</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body pr-5">
+                                {% call form_input('N', A['N'], 'readonly') %} составляющая коэффициента расхода, учитывающая форму контура сопла ∆<sub>K</sub> {% endcall %}
+                                {% call form_input('CQ', A['CQ'], 'readonly') %} составляющая коэффициента расхода, учитывающая потери давления в пограничном слое ∆<sub>δ</sub> {% endcall %}
+                                {% call form_input('BS', A['BS'], 'readonly') %} коэффициент расхода сопла {% endcall %}
+                                {% call form_input('RS', A['RS'], 'readonly') %} коэффициента расхода при сверхкритических степенях понижения давления в сопле µ* {% endcall %}
+                                {% call form_input('CY', A['CY'], 'readonly') %} критическая степень понижения давления π**<sub>ср</sub> {% endcall %}
+                                {% call form_input('CR', A['CR'], 'readonly') %} критическая степень понижения давления π**<sub>ср</sub> {% endcall %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal -->
+
+            </div>
+            <div class="card-footer text-right">
+                <button type="button" class="btn btn-info d-inline" onclick="example()">Контрольный пример</button>
+                <button type="submit" class="btn btn-secondary d-inline" form="form">Расчет</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script>
+        function example() {
+            var dict = {
+                RF: 5,
+                RK: 4.27,
+                RC: 5.93,
+                BD: 2.92,
+                BC: 7.01,
+                G: 1.4,
+                TW: 1,
+                PD: 1,
+                P0C: 3.0
+            }
+            for (key in dict) {
+                if ($("input[name=" + key + "]").val() == '') {
+                    $("input[name=" + key + "]").val(dict[key])
+                }
+            }
+            for (i=0; i<11; i++) {
+                $("input[name=" + 'RD' + i + "]").val(dict.RD[i])
+                $("input[name=" + 'XD' + i + "]").val(dict.XD[i])
+            }
+            // alert($("#results").text())
+        }
+        if ('{{A}}'.length > 2) {
+            // alert('{{A}}')
+            $('#myModal').modal('show')
+        }
+    </script>
+{% endblock %}
