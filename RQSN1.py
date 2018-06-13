@@ -110,7 +110,7 @@ def RQSN1(ANS):
         CQ2 = CQNZ1.CQNZ1(Input).get('CQ')
         CQK = CQNZ1.CQNZ1(Input).get('CQK')
         P0K = CQNZ1.CQNZ1(Input).get('P0K')
-        
+
     CP2 = P0Q/P0C
     Q = CQ2
     VK = ZY*Q*prgs.ZV(VK)

@@ -4,19 +4,19 @@
     <div class="container">
         <h3 class="mt-3 mb-3">{{ title }}</h3>
         <div class="card">
-            <div class="card-body pt-4 px-5 pb-0 mb-0">
-                <form id="form" action="/CQNZ1" method="POST">
+            <div class="card-body pt-4 px-4 pb-0 mb-0">
+                <form id="form" action="/{{ title }}" method="POST">
 
                     {% macro form_input(name, val, cond) -%}
                         <div class="form-group row mx-0">
                             <label for="{{ name }}" class="col-2 col-form-label font-weight-bold text-right">{{ name }}</label>
-                            <input type="text" class="col-2 form-control" id="{{ name }}" name="{{ name }}" placeholder="..." value="{{ val }}" required {{ cond }}>
+                            <input type="text" class="col-4 form-control" id="{{ name }}" name="{{ name }}" placeholder="..." value="{{ val }}" required {{ cond }}>
                             <small class="col form-text text-muted pl-2"> - {{ caller() }}</small>
                         </div>
                     {%- endmacro %}
 
                     <div class="row">
-                        <div class="col-4 pl-5">
+                        <div class="col-3 pl-5">
                             <table class="table table-sm text-center">
                                 <thead>
                                     <tr>
@@ -36,7 +36,27 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-8 pt-2">
+                        <div class="col-3 pl-5">
+                            <table class="table table-sm text-center">
+                                <thead>
+                                    <tr>
+                                        <th class="border-top-0"></th>
+                                        <th class="border-top-0">RD</th>
+                                        <th class="border-top-0">XD</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in range(11, 21) %}
+                                        <tr>
+                                            <th style="vertical-align: middle;">{{ i + 1 }}</th>
+                                            <td><input type="text" class="form-control-plaintext text-center py-1" id="RD{{ i }}" name="RD{{ i }}" placeholder="..." required></td>
+                                            <td><input type="text" class="form-control-plaintext text-center py-1" id="XD{{ i }}" name="XD{{ i }}" placeholder="..." required></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6 pt-2">
                             {% call form_input('K') %} признак контрольного сечения {% endcall %}
                             {% call form_input('GC') %} площадь выходного сечения сопла {% endcall %}
                             {% call form_input('DXF') %} угол наклона образующей сверхзвуковой части сопла на срезе {% endcall %}
@@ -59,11 +79,16 @@
                                 </button>
                             </div>
                             <div class="modal-body pr-5">
-                                {% call form_input('DK', A['DK'], 'readonly') %} составляющая коэффициента расхода, учитывающая форму контура сопла ∆<sub>K</sub> {% endcall %}
-                                {% call form_input('DD', A['DD'], 'readonly') %} составляющая коэффициента расхода, учитывающая потери давления в пограничном слое ∆<sub>δ</sub> {% endcall %}
+                                {% call form_input('N', A['N'], 'readonly') %} признак отрыва потока, N = 1 – отрыва нет, N = 2 – отрыв в сверхзвуковой части, N = 3 – отрыв в критическом сечении {% endcall %}
+                                {% call form_input('P', A['P'], 'readonly') %} давление вдоль образующего сопла в долях полного давления {% endcall %}
                                 {% call form_input('CQ', A['CQ'], 'readonly') %} коэффициент расхода сопла {% endcall %}
-                                {% call form_input('CQK', A['CQK'], 'readonly') %} коэффициента расхода при сверхкритических степенях понижения давления в сопле µ* {% endcall %}
-                                {% call form_input('P0K', A['P0K'], 'readonly') %} критическая степень понижения давления π**<sub>ср</sub> {% endcall %}
+                                {% call form_input('XSP', A['XSP'], 'readonly') %} абсцисса точки отрыва потока {% endcall %}
+                                {% call form_input('RSP', A['RSP'], 'readonly') %} ордината точки отрыва потока {% endcall %}
+                                {% call form_input('DYK', A['DYK'], 'readonly') %} контурные потери импульса {% endcall %}
+                                {% call form_input('DYF', A['DYF'], 'readonly') %} потери импульса на трение {% endcall %}
+                                {% call form_input('CY', A['CY'], 'readonly') %} критическая степень понижения давления π**<sub>ср</sub> {% endcall %}
+                                {% call form_input('DRH', A['DRH'], 'readonly') %} потери тяги на нерасчетность {% endcall %}
+                                {% call form_input('CR', A['CR'], 'readonly') %} критическая степень понижения давления π**<sub>ср</sub> {% endcall %}
                             </div>
                         </div>
                     </div>
@@ -72,36 +97,106 @@
 
             </div>
             <div class="card-footer text-right">
-                <button type="button" class="btn btn-info d-inline" onclick="example()">Контрольный пример</button>
+                <button type="button" class="btn btn-info d-inline" onclick="example1()">Контрольный пример 1</button>
+                <button type="button" class="btn btn-info d-inline" onclick="example2()">Контрольный пример 2</button>
+                <button type="button" class="btn btn-info d-inline" onclick="example3()">Контрольный пример 3</button>
+                <button type="button" class="btn btn-info d-inline" onclick="example4()">Контрольный пример 4</button>
                 <button type="submit" class="btn btn-secondary d-inline" form="form">Расчет</button>
             </div>
         </div>
     </div>
 {% endblock %}
 {% block scripts %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
     <script>
-        function example() {
+        function example1() {
             var dict = {
+                RD: [43, 42.1, 41.2, 40.3, 39.4, 38.4, 37.6, 36.7, 35.8, 34.9, 34, 34.3, 34.6, 34.9, 35.2, 35.5, 35.8, 36.1, 36.4, 36.7, 37],
+                // XD: [0, 1.81, 3.62, 5.44, 7.25, 9.06, 10.9, 12.68, 14.49, 16.3, 18.11, 20, 26, 32, 38, 44, 50, 60, 65, 70, 75, 80],
+                XD: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 27, 34, 41, 48, 55, 62, 69, 76, 83, 90],
                 K: 2,
-                RD: [2.305, 2.238, 1.926, 1.610, 1.453, 1.376, 1.297, 1.225, 1.151, 1.074, 1.000],
-                XD: [0, 0.640, 1.260, 1.880, 2.190, 2.340, 2.490, 2.640, 2.790, 2.940, 3.090],
+                GC: 1.4,
                 DXF: 0.0288,
-                G: 1.4,
-                FC: 1,
-                AC: 0,
-                P0C: 2.0
+                RE: 1000000,
+                TW: 1,
+                PD: 1,
+                P0C: 2
             }
             for (key in dict) {
                 if ($("input[name=" + key + "]").val() == '') {
                     $("input[name=" + key + "]").val(dict[key])
                 }
             }
-            for (i=0; i<11; i++) {
+            for (i=0; i<21; i++) {
                 $("input[name=" + 'RD' + i + "]").val(dict.RD[i])
                 $("input[name=" + 'XD' + i + "]").val(dict.XD[i])
             }
             // alert($("#results").text())
+        }
+        function example2() {
+            var dict = {
+                RD: [38, 37.2, 36.4, 35.6, 34.8, 34, 33.2, 32.4, 31.6, 30.8, 30, 31.3, 32.6, 33.9, 35.2, 36.5, 37.8, 39.1, 40.4, 41.7, 43],
+                XD: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 27, 34, 41, 48, 55, 62, 69, 76, 83, 90],
+                K: 2,
+                GC: 1.4,
+                DXF: 0.0288,
+                RE: 1000000,
+                TW: 1,
+                PD: 1,
+                P0C: 2
+            }
+            for (key in dict) {
+                if ($("input[name=" + key + "]").val() == '') {
+                    $("input[name=" + key + "]").val(dict[key])
+                }
+            }
+            for (i=0; i<21; i++) {
+                $("input[name=" + 'RD' + i + "]").val(dict.RD[i])
+                $("input[name=" + 'XD' + i + "]").val(dict.XD[i])
+            }
+        }
+        function example3() {
+            var dict = {
+                RD: [37.0, 36.3, 35.6, 34.9, 34.2, 33.5, 32.8, 32.1, 31.4, 30.7, 30.0, 31.7, 33.4, 35.1, 36.8, 38.5, 40.2, 41.9, 43.6, 45.3, 47.0],
+                XD: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 27, 34, 41, 48, 55, 62, 69, 76, 83, 90],
+                K: 2,
+                GC: 1.4,
+                DXF: 0.0288,
+                RE: 1000000,
+                TW: 1,
+                PD: 1,
+                P0C: 2
+            }
+            for (key in dict) {
+                if ($("input[name=" + key + "]").val() == '') {
+                    $("input[name=" + key + "]").val(dict[key])
+                }
+            }
+            for (i=0; i<21; i++) {
+                $("input[name=" + 'RD' + i + "]").val(dict.RD[i])
+                $("input[name=" + 'XD' + i + "]").val(dict.XD[i])
+            }
+        }
+        function example4() {
+            var dict = {
+                RD: [35, 34.3, 33.6, 32.9, 32.2, 31.5, 30.8, 30.1, 29.4, 28.7, 28, 30.6, 33.2, 35.8, 38.4, 41, 43.6, 46.2, 48.8, 51.4, 54],
+                XD: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 27, 34, 41, 48, 55, 62, 69, 76, 83, 90],
+                K: 2,
+                GC: 1.4,
+                DXF: 0.0288,
+                RE: 1000000,
+                TW: 1,
+                PD: 1,
+                P0C: 2
+            }
+            for (key in dict) {
+                if ($("input[name=" + key + "]").val() == '') {
+                    $("input[name=" + key + "]").val(dict[key])
+                }
+            }
+            for (i=0; i<21; i++) {
+                $("input[name=" + 'RD' + i + "]").val(dict.RD[i])
+                $("input[name=" + 'XD' + i + "]").val(dict.XD[i])
+            }
         }
         if ('{{A}}'.length > 2) {
             // alert('{{A}}')

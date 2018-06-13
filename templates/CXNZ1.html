@@ -1,0 +1,91 @@
+{% extends "index.html" %}
+{% block title %} - {{ title }} program{% endblock %}
+{% block content %}
+    <div class="container">
+        <h3 class="mt-3 mb-3">{{ title }}</h3>
+        <div class="card">
+            <div class="card-body pt-4 px-5 pb-0 mb-0">
+                <form id="form" action="/{{ title }}" method="POST">
+
+                    {% macro form_input(name, val, cond) -%}
+                        <div class="form-group row mx-0">
+                            <label for="{{ name }}" class="col-2 col-form-label font-weight-bold text-right">{{ name }}</label>
+                            <input type="text" class="col-3 form-control" id="{{ name }}" name="{{ name }}" placeholder="..." value="{{ val }}" required {{ cond }}>
+                            <small class="col form-text text-muted pl-2"> - {{ caller() }}</small>
+                        </div>
+                    {%- endmacro %}
+
+                    <div class="row mb-3">
+                        <div class="col pt-2">
+                            {% call form_input('FM') %} площадь миделевого сечения хвостовой части гондолы {% endcall %}
+                            {% call form_input('FG') %} площадь среза гондолы {% endcall %}
+                            {% call form_input('BG') %} длина хвостовой части гондолы {% endcall %}
+                            {% call form_input('AG') %} угол наклона образующей гондолы на срезе {% endcall %}
+                            {% call form_input('DG') %} толщина пограничного слоя в миделевом сечении хвостовой части гондолы {% endcall %}
+                        </div>
+                        <div class="col pt-2">
+                            {% call form_input('FN') %} площадь (суммарная площадь двух сопл) сопла в выходном сечении {% endcall %}
+                            {% call form_input('BN') %} длина внешней части сопла {% endcall %}
+                            {% call form_input('AN') %} угол наклона образующей внешней поверхности сопла в выходном сечении {% endcall %}
+                            {% call form_input('WH') %} число М внешнего невозмущенного потока {% endcall %}
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Start Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Результаты расчета</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body pr-5">
+                                {% call form_input('XSP', A['XSP'], 'readonly') %} абсцисса точки отрыва потока на поверхности гондолы или сопла {% endcall %}
+                                {% call form_input('FSP', A['FSP'], 'readonly') %} площадь поперечного сечения гондолы или сопла в точке отрыва потока {% endcall %}
+                                {% call form_input('ASP', A['ASP'], 'readonly') %} угол наклона образующей в точке отрыва потока {% endcall %}
+                                {% call form_input('PD0', A['PD0'], 'readonly') %} коэффициент сопротивления базового хвостовика {% endcall %}
+                                {% call form_input('CXG', A['CXG'], 'readonly') %} коэффициент сопротивления хвостовой части гондолы без струи {% endcall %}
+                                {% call form_input('CXN', A['CXN'], 'readonly') %} коэффициент сопротивления сопла без струи {% endcall %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal -->
+
+            </div>
+            <div class="card-footer text-right">
+                <button type="button" class="btn btn-info d-inline" onclick="example()">Контрольный пример</button>
+                <button type="submit" class="btn btn-secondary d-inline" form="form">Расчет</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        function example() {
+            var dict = {
+                FM: 80,
+                FG: 70,
+                BG: 6,
+                AG: 0.12,
+                DG: 0.8,
+                FN: 50,
+                BN: 2,
+                AN: 0.4,
+                WH: 0.9
+            }
+            for (key in dict) {
+                if ($("input[name=" + key + "]").val() == '') {
+                    $("input[name=" + key + "]").val(dict[key])
+                }
+            }
+        }
+        if ('{{A}}'.length > 2) {
+            // alert('{{A}}')
+            $('#myModal').modal('show')
+        }
+    </script>
+{% endblock %}

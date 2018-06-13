@@ -5,44 +5,29 @@
         <h3 class="mt-3 mb-3">{{ title }}</h3>
         <div class="card">
             <div class="card-body pt-4 px-5 pb-0 mb-0">
-                <form id="form" action="/CQNZ1" method="POST">
+                <form id="form" action="/{{ title }}" method="POST">
 
                     {% macro form_input(name, val, cond) -%}
                         <div class="form-group row mx-0">
                             <label for="{{ name }}" class="col-2 col-form-label font-weight-bold text-right">{{ name }}</label>
-                            <input type="text" class="col-2 form-control" id="{{ name }}" name="{{ name }}" placeholder="..." value="{{ val }}" required {{ cond }}>
+                            <input type="text" class="col-3 form-control" id="{{ name }}" name="{{ name }}" placeholder="..." value="{{ val }}" required {{ cond }}>
                             <small class="col form-text text-muted pl-2"> - {{ caller() }}</small>
                         </div>
                     {%- endmacro %}
 
                     <div class="row">
-                        <div class="col-4 pl-5">
-                            <table class="table table-sm text-center">
-                                <thead>
-                                    <tr>
-                                        <th class="border-top-0"></th>
-                                        <th class="border-top-0">RD</th>
-                                        <th class="border-top-0">XD</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for i in range(11) %}
-                                        <tr>
-                                            <th style="vertical-align: middle;">{{ i + 1 }}</th>
-                                            <td><input type="text" class="form-control-plaintext text-center py-1" id="RD{{ i }}" name="RD{{ i }}" placeholder="..." required></td>
-                                            <td><input type="text" class="form-control-plaintext text-center py-1" id="XD{{ i }}" name="XD{{ i }}" placeholder="..." required></td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <div class="col pt-2">
+                            {% call form_input('N') %} число струек тока, в которых параметры принимаются постоянными {% endcall %}
+                            {% call form_input('DF') %} массив поперечных площадей струек тока на входе ΔF<sub>фi</sub> {% endcall %}
+                            {% call form_input('P0') %} массив полных давлений в струйках тора p<sub>0i</sub> {% endcall %}
+                            {% call form_input('T0') %} массив температур торможения T<sub>0i</sub> {% endcall %}
+                            {% call form_input('G') %} массив показателей адиабаты x<sub>i</sub> {% endcall %}
                         </div>
-                        <div class="col-8 pt-2">
-                            {% call form_input('K') %} признак контрольного сечения {% endcall %}
-                            {% call form_input('DXF') %} толщина вытеснения пограничного слоя на входе в сопло {% endcall %}
-                            {% call form_input('G') %} показатель адиабаты {% endcall %}
-                            {% call form_input('FC') %} площадь выходного сечения сопла {% endcall %}
-                            {% call form_input('AC') %} угол наклона образующей сверхзвуковой части сопла на срезе {% endcall %}
-                            {% call form_input('P0C') %} относительное полное давление в сопле {% endcall %}
+                        <div class="col pt-2">
+                            {% call form_input('B') %} массив газовых постоянных R<sub>i</sub> {% endcall %}
+                            {% call form_input('CP') %} массив удельных теплоемкостей при постоянном давлении c<sub>pi</sub> {% endcall %}
+                            {% call form_input('PF') %} статическое давление на входе в сопло p<sub>ф</sub> {% endcall %}
+                            {% call form_input('PH') %} атмосферное давление p<sub>∞</sub> {% endcall %}
                         </div>
                     </div>
                 </form>
@@ -58,11 +43,24 @@
                                 </button>
                             </div>
                             <div class="modal-body pr-5">
-                                {% call form_input('DK', A['DK'], 'readonly') %} составляющая коэффициента расхода, учитывающая форму контура сопла ∆<sub>K</sub> {% endcall %}
-                                {% call form_input('DD', A['DD'], 'readonly') %} составляющая коэффициента расхода, учитывающая потери давления в пограничном слое ∆<sub>δ</sub> {% endcall %}
-                                {% call form_input('CQ', A['CQ'], 'readonly') %} коэффициент расхода сопла {% endcall %}
-                                {% call form_input('CQK', A['CQK'], 'readonly') %} коэффициента расхода при сверхкритических степенях понижения давления в сопле µ* {% endcall %}
-                                {% call form_input('P0K', A['P0K'], 'readonly') %} критическая степень понижения давления π**<sub>ср</sub> {% endcall %}
+                                {% call form_input('FF', A['FF'], 'readonly') %} площадь сопла на входе F<sub>ф</sub> {% endcall %}
+                                {% call form_input('FK', A['FK'], 'readonly') %} площадь критического сечения сопла F<sub>*</sub> {% endcall %}
+                                {% call form_input('FC', A['FC'], 'readonly') %} площадь среза сопла F<sub>с</sub> {% endcall %}
+                                {% call form_input('PK', A['PK'], 'readonly') %} статическое давление в критическом сечении сопла p<sub>*</sub> {% endcall %}
+                                {% call form_input('PC', A['PC'], 'readonly') %} статическое давление в выходном сечении сопла p<sub>с</sub> {% endcall %}
+                                {% call form_input('QC', A['QC'], 'readonly') %} суммарный расход газа через сопло Q<sub>c</sub> {% endcall %}
+                                {% call form_input('EC', A['EC'], 'readonly') %} суммарная энтальпия газа в сопле I<sub>с</sub> {% endcall %}
+                                {% call form_input('YC', A['YC'], 'readonly') %} импульс потока на выходе из сопла J<sub>с</sub> {% endcall %}
+                                {% call form_input('RI', A['RI'], 'readonly') %} идеальная тяга сопла P<sub>с. ид</sub> {% endcall %}
+                                {% call form_input('P0S', A['P0S'], 'readonly') %} осредненное полное давление <span style="text-decoration: overline;">p</span><sub>0c</sub> {% endcall %}
+                                {% call form_input('T0S', A['T0S'], 'readonly') %} осредненная температура торможения T<sub>0с</sub> {% endcall %}
+                                {% call form_input('GS', A['GS'], 'readonly') %} осредненный показатель адиабаты <span style="text-decoration: overline;">x</span> {% endcall %}
+                                {% call form_input('BC', A['BC'], 'readonly') %} осредненная газовая постоянная <span style="text-decoration: overline;">R</span> {% endcall %}
+                                {% call form_input('CPS', A['CPS'], 'readonly') %} осредненный коэффициент теплосодержания с<sub>p</sub> {% endcall %}
+                                {% call form_input('CQ', A['CQ'], 'readonly') %} коэффициент расхода сопла с осредненными параметрами µ {% endcall %}
+                                {% call form_input('CY', A['CY'], 'readonly') %} коэффициент импульса осредненного потока J {% endcall %}
+                                {% call form_input('CR', A['CR'], 'readonly') %} коэффициент идеальной тяги осредненного потока <span style="text-decoration: overline;">P</span><sub>с. ид</sub> {% endcall %}
+                                {% call form_input('CRC', A['CRC'], 'readonly') %} коэффициент тяги сопла <span style="text-decoration: overline;">P</span><sub>с</sub> с заданной площадью F<sub>с</sub> {% endcall %}
                             </div>
                         </div>
                     </div>
@@ -71,7 +69,7 @@
 
             </div>
             <div class="card-footer text-right">
-                <button type="button" class="btn btn-info d-inline" onclick="example()">Контрольный пример</button>
+                <!-- <button type="button" class="btn btn-info d-inline" onclick="example()">Контрольный пример</button> -->
                 <button type="submit" class="btn btn-secondary d-inline" form="form">Расчет</button>
             </div>
         </div>

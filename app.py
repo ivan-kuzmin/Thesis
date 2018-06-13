@@ -1,13 +1,10 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 import os
 import datetime
 import pandas as pd
 from flask import Flask, request, render_template
+import RQSN1, RQCN1, CXCT, CXGD2, XSPGN1, PDGD1, PDGDN1, PDJT1, RXJT1, RXSP1, RQLNSQ, RQNZVR, RQLN1, DCXPD, DCXWT, DCXCS, CXGD1, CXNZ1, CXNZ2, PGE, BLJT1, BLSP1, VBLS, TBLS, ASPG
 import CQNZ1
-import RQSN1
-import RQCN1
+# import CXGD1
 # from pyfladesk import init_gui
 # import webbrowser
 
@@ -43,6 +40,6 @@ def home(page='index'):
     return render_template(page + '.html', title=page, A=func)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
     # init_gui(app, width=1150, height=620)
     # webbrowser.open("http://localhost:5000")

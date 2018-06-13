@@ -4,127 +4,103 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" href="{{url_for('static', filename='favicon.ico')}}">
+    <link rel="icon" type="image/ico" href="{{url_for('static', filename='favicon.ico')}}">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
     <!-- <link rel="stylesheet" href="style.css"> -->
     <!-- <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}"> -->
 
     <title>Thesis{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <div class="wrapper">
+        <div class="no-footer">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item mx-4">
+                            <a class="nav-link" href="index">Главная<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item mx-4">
+                            <a class="nav-link" href="first" data-toggle="tooltip" data-placement="bottom" title="Комплекс подпрограмм расчета контуров и внутренних характеристик реактивных сопл ВРД.">NZLRQ1</a>
+                        </li>
+                        <li class="nav-item mx-4">
+                            <a class="nav-link" href="second" data-toggle="tooltip" data-placement="bottom" title="Комплекс подпрограмм расчета внешнего сопротивления реактивных сопл ВРД в самолетных компоновках.">NZLCX1</a>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2 typeahead" type="search" placeholder="Search" aria-label="Search" data-provide="typeahead">
+                        <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
+                    </form>
+                </div>
+                <!-- <a class="navbar-brand py-0" href="index"><img src="{{url_for('static', filename='images/brand.png')}}" alt="brand"></a> -->
+            </nav>
+
+            {% block content %}
+            <div class="jumbotron jumbotron-fluid" style="background-image: url({{url_for('static', filename='images/plane4.jpg')}}); background-position: center;">
+                <div class="container my-5">
+                    <h1 class="display-4">Thesis programs</h1>
+                    <p class="lead">Комплекс подпрограмм расчета характеристик реактивных сопл ВРД.</p>
+                </div>
+            </div>
+
+            <div class="card-deck mx-3">
+                <div class="card">
+                    <h5 class="card-header">
                         NZLRQ1
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="CQNZ1">CQNZ1</a>
-                        <a class="dropdown-item" href="RQSN1">RQSN1</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="RXLN1">RXLN1</a>
-                        <a class="dropdown-item" href="RQCN1">RQCN1</a>
-                        <a class="dropdown-item" href="RQLN1">RQLN1</a>
-                        <a class="dropdown-item" href="ELFK">ELFK</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="RQLNVR">RQLNVR</a>
-                        <a class="dropdown-item" href="RQLNSQ">RQLNSQ</a>
+                    </h5>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Комплекс подпрограмм расчета контуров и внутренних характеристик реактивных сопл ВРД.
+                        </p>
+                        <a href="first" class="btn btn-primary float-right">Перейти</a>
                     </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </div>
+                <div class="card">
+                    <h5 class="card-header">
                         NZLCX1
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">CXCT</a>
-                        <a class="dropdown-item" href="#">CXGD1</a>
-                        <a class="dropdown-item" href="#">CXGD2</a>
-                        <a class="dropdown-item" href="#">CXNZ1</a>
-                        <a class="dropdown-item" href="#">CXNZ2</a>
-                        <a class="dropdown-item" href="#">XSPGN1</a>
-                        <a class="dropdown-item" href="#">ASPG</a>
-                        <a class="dropdown-item" href="#">PGE</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">XSPGN1</a>
-                        <a class="dropdown-item" href="#">ASPG</a>
-                        <a class="dropdown-item" href="#">PGE</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">XSPGN1</a>
-                        <a class="dropdown-item" href="#">ASPG</a>
-                        <a class="dropdown-item" href="#">PGE</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">CXGD2</a>
-                        <a class="dropdown-item" href="#">CXNZ1</a>
-                        <a class="dropdown-item" href="#">CXNZ2</a>
-                        <a class="dropdown-item" href="#">XSPGN1</a>
-                        <a class="dropdown-item" href="#">ASPG</a>
-                        <a class="dropdown-item" href="#">PGE</a>
+                    </h5>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Комплекс подпрограмм расчета внешнего сопротивления реактивных сопл ВРД в самолетных компоновках.
+                        </p>
+                        <a href="second" class="btn btn-primary float-right">Перейти</a>
                     </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
-                </li>
-            </ul>
-            <!-- <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form> -->
-        </div>
-    </nav>
-
-    {% block content %}
-    <div class="jumbotron jumbotron-fluid" style="background-image: url({{url_for('static', filename='images/plane4.jpg')}}); background-position: center;">
-        <div class="container">
-            <h1 class="display-4">Thesis programs</h1>
-            <p class="lead">Комплекс подпрограмм расчета характеристик реактивных сопл ВРД.</p>
-        </div>
-    </div>
-
-    <div class="card-deck mx-3">
-        <div class="card">
-            <h5 class="card-header">
-                NZLRQ1
-            </h5>
-            <div class="card-body">
-                <p class="card-text">
-                    Комплекс подпрограмм расчета контуров и внутренних характеристик реактивных сопл ВРД.
-                </p>
-                <a href="first" class="btn btn-primary float-right">Перейти</a>
+                </div>
             </div>
+            {% endblock %}
         </div>
-        <div class="card">
-            <h5 class="card-header">
-                NZLCX1
-            </h5>
-            <div class="card-body">
-                <p class="card-text">
-                    Комплекс подпрограмм расчета внешнего сопротивления реактивных сопл ВРД в самолетных компоновках.
-                </p>
-                <a href="second" class="btn btn-primary float-right">Перейти</a>
+
+        <footer class="footer mt-4 bg-light">
+          <div class="container-fluid py-3">
+            <div class="row text-center">
+                <div class="col-lg my-auto">
+                    <img class="img-fluid" src="{{url_for('static', filename='images/bmstu.png')}}" alt="brand" style="max-height: 80px;">
+                </div>
+                <div class="col-lg my-auto">
+                    <img class="img-fluid" src="{{url_for('static', filename='images/brand2.png')}}" alt="brand" style="max-height: 50px;">
+                </div>
+                <div class="col-lg my-auto">
+                    <span><b>Кузьмин И.C. – Э6-47</b></span><br>
+                    <span>Тема: «Применение инженерных методов для расчета характеристик реактивных сопел»</span>
+                </div>
             </div>
-        </div>
+          </div>
+      </footer>
     </div>
-    {% endblock %}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="{{url_for('static', filename='js/jquery-3.2.1.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/popper.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
-    <script>$(function () {$('[data-toggle="tooltip"]').tooltip()})</script>
+    <script src="{{url_for('static', filename='js/bootstrap3-typeahead.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/scripts.js')}}"></script>
     {% block scripts %}
     {% endblock %}
 </body>
